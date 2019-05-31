@@ -43,6 +43,7 @@ import com.amap.api.navi.AmapNaviType;
 import com.amap.api.navi.AmapPageType;
 import com.amap.api.navi.INaviInfoCallback;
 import com.amap.api.navi.model.AMapNaviLocation;
+import com.amap.api.services.busline.BusStationItem;
 import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
@@ -61,6 +62,7 @@ import com.amap.api.services.route.WalkPath;
 import com.amap.api.services.route.WalkRouteResult;
 import com.map.service.adapter.BusResultListAdapter;
 import com.map.service.adapter.PoiSearchAdapter;
+import com.map.service.amap.api.BusSearchMgr;
 import com.map.service.amap.api.GeoSearchMgr;
 import com.map.service.amap.api.LocationMgr;
 import com.map.service.amap.api.PoiSearchMgr;
@@ -70,6 +72,7 @@ import com.map.service.overlay.WalkRouteOverlay;
 import com.map.service.util.AMapUtil;
 import com.map.service.util.ToastUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
@@ -132,6 +135,7 @@ public class MapFragment extends Fragment  implements AMap.OnMapClickListener,Ro
     private PoiSearchMgr mPoiSearchMgr;
     private PoiSearchMgr mTextSearchMgr;
     private LocationMgr mLocationMgr;
+    private BusSearchMgr mBusSearchMgr;
 
     private Double mLongitude;
     private Double mLatitude;
@@ -215,6 +219,8 @@ public class MapFragment extends Fragment  implements AMap.OnMapClickListener,Ro
 
         mTextSearchMgr = new PoiSearchMgr(getContext());
 
+        mBusSearchMgr =  new BusSearchMgr(getContext());
+
         mSearchEdit = (EditText) view.findViewById(R.id.search_edit);
         mDeleteBtn = (Button) view.findViewById(R.id.search_back);
         mCancelBtn = (Button) view.findViewById(R.id.search_cancel);
@@ -272,6 +278,7 @@ public class MapFragment extends Fragment  implements AMap.OnMapClickListener,Ro
                 ToastUtil.show(getContext(),error);
             }
         });
+
 
         initView();
         return view;
@@ -354,18 +361,20 @@ public class MapFragment extends Fragment  implements AMap.OnMapClickListener,Ro
 
             @Override
             public void onSuccess(List<PoiItem> poiItems) {
-                mMovePoiAapter = new PoiSearchAdapter(getContext(),poiItems);
-                mMovePoiListView.setAdapter(mMovePoiAapter);
-                mMovePoiListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        PoiSearchEntity poiSearchEntity = (PoiSearchEntity)mMovePoiAapter.getItem(i);
-                        mFinalChoosePosition =  convertToLatLng(poiSearchEntity.getPoiItem().getLatLonPoint());
-                        Log.d("lgx","点击后的最终经纬度：  纬度" + mFinalChoosePosition.latitude + " 经度 " + mFinalChoosePosition.longitude);
-                        // 只要地图发生改变，就会调用 onCameraChangeFinish
-                        mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mFinalChoosePosition.latitude, mFinalChoosePosition.longitude), 15));
-                    }
-                });
+//                mMovePoiAapter = new PoiSearchAdapter(getContext(),poiItems);
+//                mMovePoiListView.setAdapter(mMovePoiAapter);
+//                mMovePoiListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                        PoiSearchEntity poiSearchEntity = (PoiSearchEntity)mMovePoiAapter.getItem(i);
+//                        mFinalChoosePosition =  convertToLatLng(poiSearchEntity.getPoiItem().getLatLonPoint());
+//                        Log.d("lgx","点击后的最终经纬度：  纬度" + mFinalChoosePosition.latitude + " 经度 " + mFinalChoosePosition.longitude);
+//                        // 只要地图发生改变，就会调用 onCameraChangeFinish
+//                        mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mFinalChoosePosition.latitude, mFinalChoosePosition.longitude), 15));
+//                    }
+//                });
+                PoiItem item = poiItems.get(0);
+                mBusSearchMgr.searchStation(item.getTitle(),cityCode);
             }
 
             @Override
@@ -539,6 +548,21 @@ public class MapFragment extends Fragment  implements AMap.OnMapClickListener,Ro
             }
         });
 
+        mBusSearchMgr.setStationListener(new BusSearchMgr.BusStationSearchListener() {
+            @Override
+            public void onSuccess(ArrayList<BusStationItem> items) {
+
+            }
+
+            @Override
+            public void onFail(String error) {
+
+            }
+        });
+
+
+
+        //获取当前位置
         getPosition();
 
 
@@ -619,6 +643,10 @@ public class MapFragment extends Fragment  implements AMap.OnMapClickListener,Ro
     public void doSearchBusLine()
     {
 
+    }
+
+    public void doSearchBusStationWithKeyWord(String keyword){
+        mBusSearchMgr.searchStation(keyword,cityCode);
     }
 
     //移动地图

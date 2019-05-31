@@ -14,7 +14,8 @@ public class SQLiteDbHelper extends SQLiteOpenHelper {
     public static int DB_VERSION = 1;
     //用户表
     public static final String TAB_USER = "user";
-
+    //用户反馈表
+    public static final String TAB_USER_REPORT = "user_report";
 
     public SQLiteDbHelper(Context context){
         super(context,DB_NAME,null,DB_VERSION);
@@ -41,4 +42,12 @@ public class SQLiteDbHelper extends SQLiteOpenHelper {
                 "user_pwd varchar(60))");
     }
 
+    //用户反馈表
+    public void createTableUserReport(SQLiteDatabase db){
+        db.execSQL("CREATE TABLE IF NOT EXISTS "+TAB_USER_REPORT +
+                "(id integer primary key autoincrement, " +
+                "user_name varchar(60), " +
+                "report_time varchar(60), " +
+                "report_content varchar(60))");
+    }
 }
