@@ -616,6 +616,11 @@ public class MapFragment extends Fragment  implements AMap.OnMapClickListener,Ro
         mPoiSearchMgr.doSearchQuery(keyword,mFinalChoosePosition.latitude,mFinalChoosePosition.longitude);
     }
 
+    public void doSearchBusLine()
+    {
+
+    }
+
     //移动地图
     public void moveMapCamera(){
         mAMap = mMapView.getMap();

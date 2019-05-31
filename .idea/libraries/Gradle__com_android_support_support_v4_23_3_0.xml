@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="Gradle: com.android.support:support-v4-23.3.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.android/build-cache/8719e3fed9ae17c042c646bb0a554d98cb075641/output/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.android/build-cache/8719e3fed9ae17c042c646bb0a554d98cb075641/output/res" />
+      <root url="jar://$USER_HOME$/.android/build-cache/8719e3fed9ae17c042c646bb0a554d98cb075641/output/jars/libs/internal_impl-23.3.0.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/Library/Android/sdk/extras/android/m2repository/com/android/support/support-v4/23.3.0/support-v4-23.3.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/Library/Android/sdk/extras/android/m2repository/com/android/support/support-v4/23.3.0/support-v4-23.3.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
