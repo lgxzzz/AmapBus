@@ -1,7 +1,6 @@
 package com.map.service;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
@@ -40,9 +39,6 @@ import com.amap.api.maps.model.animation.Animation;
 import com.amap.api.navi.AmapNaviPage;
 import com.amap.api.navi.AmapNaviParams;
 import com.amap.api.navi.AmapNaviType;
-import com.amap.api.navi.AmapPageType;
-import com.amap.api.navi.INaviInfoCallback;
-import com.amap.api.navi.model.AMapNaviLocation;
 import com.amap.api.services.busline.BusStationItem;
 import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
@@ -51,8 +47,6 @@ import com.amap.api.services.geocoder.GeocodeAddress;
 import com.amap.api.services.geocoder.GeocodeResult;
 import com.amap.api.services.geocoder.GeocodeSearch;
 import com.amap.api.services.geocoder.RegeocodeResult;
-import com.amap.api.services.poisearch.PoiResult;
-import com.amap.api.services.poisearch.PoiSearch;
 import com.amap.api.services.route.BusRouteResult;
 import com.amap.api.services.route.DrivePath;
 import com.amap.api.services.route.DriveRouteResult;
@@ -61,6 +55,7 @@ import com.amap.api.services.route.RouteSearch;
 import com.amap.api.services.route.WalkPath;
 import com.amap.api.services.route.WalkRouteResult;
 import com.map.service.adapter.BusResultListAdapter;
+import com.map.service.adapter.BusStationListAdapter;
 import com.map.service.adapter.PoiSearchAdapter;
 import com.map.service.amap.api.BusSearchMgr;
 import com.map.service.amap.api.GeoSearchMgr;
@@ -71,6 +66,7 @@ import com.map.service.overlay.DrivingRouteOverlay;
 import com.map.service.overlay.WalkRouteOverlay;
 import com.map.service.util.AMapUtil;
 import com.map.service.util.ToastUtil;
+import com.map.service.view.BusStationDetailDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,6 +127,7 @@ public class MapFragment extends Fragment  implements AMap.OnMapClickListener,Ro
 
     private PoiSearchAdapter mMovePoiAapter;
     private PoiSearchAdapter mTextPoiAapter;
+    private BusStationListAdapter mBusStationAdapter;
 
     private PoiSearchMgr mPoiSearchMgr;
     private PoiSearchMgr mTextSearchMgr;
@@ -551,7 +548,18 @@ public class MapFragment extends Fragment  implements AMap.OnMapClickListener,Ro
         mBusSearchMgr.setStationListener(new BusSearchMgr.BusStationSearchListener() {
             @Override
             public void onSuccess(ArrayList<BusStationItem> items) {
-
+                mBusStationAdapter = new BusStationListAdapter(getContext(),items);
+                mMovePoiListView.setAdapter(mBusStationAdapter);
+                mMovePoiListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        //显示该公交站具体路线
+                        BusStationItem stationItem = (BusStationItem)mBusStationAdapter.getItem(i);
+                        BusStationDetailDialog dialog = new BusStationDetailDialog(getContext(),R.layout.bus_station_detail,true,true);
+                        dialog.setBusStation(stationItem);
+                        dialog.show();
+                    }
+                });
             }
 
             @Override
