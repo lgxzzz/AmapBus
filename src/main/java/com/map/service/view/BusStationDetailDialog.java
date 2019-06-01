@@ -16,8 +16,8 @@ import com.amap.api.services.busline.BusLineItem;
 import com.amap.api.services.busline.BusStationItem;
 import com.map.service.R;
 import com.map.service.adapter.BusLineListAdapter;
-import com.map.service.bean.User;
-import com.map.service.manager.LoginManager;
+import com.map.service.adapter.RealBusAdapter;
+import com.map.service.amap.api.BusSearchMgr;
 
 import java.util.List;
 
@@ -45,10 +45,25 @@ public class BusStationDetailDialog extends Dialog {
     private RealTimeBusView mRealTimeBusView;
     private String cityCode;
     private HorizontalListView2 horizon_listview;
+    private BusSearchMgr mBusSearchMgr;
+    private RealBusAdapter mRealBusAdapter;
 
     public BusStationDetailDialog(Context context, int layoutid, boolean isCancelable, boolean isBackCancelable) {
         super(context, R.style.MyDialog);
+        mBusSearchMgr = new BusSearchMgr(context);
+        mBusSearchMgr.setLineListener(new BusSearchMgr.BusLineSearchListener() {
+            @Override
+            public void onSuccess(List<BusLineItem> lineItems) {
+                List<BusStationItem> itmes = lineItems.get(0).getBusStations();
+                mRealBusAdapter = new RealBusAdapter(getContext(),itmes);
+                horizon_listview.setAdapter(mRealBusAdapter);
+            }
 
+            @Override
+            public void onFail(String error) {
+
+            }
+        });
         this.context = context;
         this.view = LayoutInflater.from(context).inflate(layoutid, null);
         this.iscancelable = isCancelable;
@@ -111,8 +126,10 @@ public class BusStationDetailDialog extends Dialog {
                 BusLineItem busLineItem = (BusLineItem)adapterView.getAdapter().getItem(i);
                 mBusLineDetailLayout.setVisibility(View.VISIBLE);
                 mBusStationLayout.setVisibility(View.GONE);
-                mRealTimeBusView.setBusLineItem(busLineItem,cityCode);
-                mBusLineNameTv.setText(busLineItem.getBusLineName());
+//                mRealTimeBusView.setBusLineItem(busLineItem,cityCode);
+                int index = busLineItem.getBusLineName().lastIndexOf("(");
+                mBusLineNameTv.setText(busLineItem.getBusLineName().substring(0,index));
+                mBusSearchMgr.searchLine(busLineItem.getBusLineId(),cityCode);
             }
         });
 

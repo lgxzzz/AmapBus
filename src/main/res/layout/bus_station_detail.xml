@@ -18,9 +18,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/bus_station_name"
-            android:textSize="30dp"
+            android:textSize="25dp"
             android:textColor="@android:color/black"
             android:text="公交站名"
+            android:singleLine="true"
+            android:maxLength="10"
             />
         <ListView
             android:layout_width="match_parent"
@@ -68,7 +70,8 @@
                 android:layout_centerHorizontal="true"
                 android:text="路线名称"
                 android:textColor="@android:color/black"
-                android:textSize="25dp"
+                android:maxLength="10"
+                android:textSize="20dp"
                 android:textStyle="bold" />
         </RelativeLayout>
 
