@@ -556,7 +556,7 @@ public class MapFragment extends Fragment  implements AMap.OnMapClickListener,Ro
                         //显示该公交站具体路线
                         BusStationItem stationItem = (BusStationItem)mBusStationAdapter.getItem(i);
                         BusStationDetailDialog dialog = new BusStationDetailDialog(getContext(),R.layout.bus_station_detail,true,true);
-                        dialog.setBusStation(stationItem);
+                        dialog.setBusStation(stationItem,cityCode);
                         dialog.show();
                     }
                 });

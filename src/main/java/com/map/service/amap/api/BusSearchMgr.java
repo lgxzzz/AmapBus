@@ -14,6 +14,7 @@ import com.amap.api.services.busline.BusStationResult;
 import com.amap.api.services.busline.BusStationSearch;
 import com.amap.api.services.core.AMapException;
 import com.amap.api.services.geocoder.GeocodeAddress;
+import com.map.service.overlay.BusLineOverlay;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,20 +49,17 @@ public class BusSearchMgr implements BusStationSearch.OnBusStationSearchListener
     /**
      * 公交线路搜索
      */
-    public void searchLine() {
-//        if ("".equals(search)) {
-//            search = "641";
-//            searchName.setText(search);
-//        }
-//        busLineQuery = new BusLineQuery(search, BusLineQuery.SearchType.BY_LINE_NAME,
-//                cityCode);// 第一个参数表示公交线路名，第二个参数表示公交线路查询，第三个参数表示所在城市名或者城市区号
-//        busLineQuery.setPageSize(10);// 设置每页返回多少条数据
-//        busLineQuery.setPageNumber(currentpage);// 设置查询第几页，第一页从0开始算起
-//        busLineSearch = new BusLineSearch(this, busLineQuery);// 设置条件
-//        busLineSearch.setOnBusLineSearchListener(this);// 设置查询结果的监听
-//        busLineSearch.searchBusLineAsyn();// 异步查询公交线路名称
-//        // 公交站点搜索事例
-
+    public void searchLine(String search,String cityCode) {
+        if ("".equals(search)) {
+            mLineListener.onFail("搜索失败");
+        }
+        busLineQuery = new BusLineQuery(search, BusLineQuery.SearchType.BY_LINE_ID,
+                cityCode);// 第一个参数表示公交线路名，第二个参数表示公交线路查询，第三个参数表示所在城市名或者城市区号
+        busLineQuery.setPageSize(10);// 设置每页返回多少条数据
+        busLineQuery.setPageNumber(0);// 设置查询第几页，第一页从0开始算起
+        busLineSearch = new BusLineSearch(mContext, busLineQuery);// 设置条件
+        busLineSearch.setOnBusLineSearchListener(this);// 设置查询结果的监听
+        busLineSearch.searchBusLineAsyn();// 异步查询公交线路名称
     }
 
 
@@ -79,8 +77,25 @@ public class BusSearchMgr implements BusStationSearch.OnBusStationSearchListener
     }
 
     @Override
-    public void onBusLineSearched(BusLineResult busLineResult, int i) {
-
+    public void onBusLineSearched(BusLineResult result, int rCode) {
+        if (rCode == AMapException.CODE_AMAP_SUCCESS) {
+            if (result != null && result.getQuery() != null
+                    && result.getQuery().equals(busLineQuery)) {
+                if (result.getPageCount() > 0
+                        && result.getBusLines() != null
+                        && result.getBusLines().size() > 0) {
+                    busLineResult = result;
+                    lineItems = result.getBusLines();
+                    if(lineItems != null) {
+                        mLineListener.onSuccess(lineItems);
+                    }
+                }
+            } else {
+                mLineListener.onFail("搜索失败");
+            }
+        } else {
+            mLineListener.onFail("搜索失败");
+        }
     }
 
 
@@ -114,7 +129,7 @@ public class BusSearchMgr implements BusStationSearch.OnBusStationSearchListener
     }
 
     public interface BusLineSearchListener{
-        public void onSuccess(GeocodeAddress address);
+        public void onSuccess(List<BusLineItem> lineItems);
         public void onFail(String error);
     }
 

@@ -6,6 +6,9 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -27,11 +30,21 @@ public class BusStationDetailDialog extends Dialog {
     private Context context;
 
     private TextView mBusStationNameTv;
+    private TextView mBusLineNameTv;
     private String mBusStationName;
     private ListView mBusLineListView;
     private BusLineListAdapter mAdapter;
 
     private List<BusLineItem> busLineItems;
+
+    private LinearLayout mBusStationLayout;
+    private LinearLayout mBusLineDetailLayout;
+    private Button mBackBtn;
+    private Button mFaveBtn;
+
+    private RealTimeBusView mRealTimeBusView;
+    private String cityCode;
+    private HorizontalListView2 horizon_listview;
 
     public BusStationDetailDialog(Context context, int layoutid, boolean isCancelable, boolean isBackCancelable) {
         super(context, R.style.MyDialog);
@@ -57,18 +70,52 @@ public class BusStationDetailDialog extends Dialog {
 
     public void initView() {
         mBusStationNameTv = (TextView) this.view.findViewById(R.id.bus_station_name);
+        mBusLineNameTv = (TextView) this.view.findViewById(R.id.bus_line_name);
         mBusLineListView = (ListView) this.view.findViewById(R.id.bus_line_listview);
 
+        mBusStationLayout = (LinearLayout)this.view.findViewById(R.id.bus_station_layout);
+        mBusLineDetailLayout = (LinearLayout)this.view.findViewById(R.id.bus_line_layout);
 
+        mBackBtn = (Button)this.view.findViewById(R.id.bus_line_detail_back);
+        mFaveBtn = (Button)this.view.findViewById(R.id.bus_line_detail_fav);
 
+        mRealTimeBusView = (RealTimeBusView) this.view.findViewById(R.id.real_bus_view);
+
+        mBackBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mBusLineDetailLayout.setVisibility(View.GONE);
+                mBusStationLayout.setVisibility(View.VISIBLE);
+            }
+        });
+
+        mFaveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        horizon_listview = (HorizontalListView2) this.view.findViewById(R.id.horizon_listview);
     }
 
 
-    public void setBusStation(BusStationItem stationItem){
+    public void setBusStation(BusStationItem stationItem, final String cityCode){
         this.mBusStationName = stationItem.getBusStationName();
         this.busLineItems = stationItem.getBusLineItems();
         mAdapter = new BusLineListAdapter(getContext(),this.busLineItems);
         mBusLineListView.setAdapter(mAdapter);
+        mBusLineListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                BusLineItem busLineItem = (BusLineItem)adapterView.getAdapter().getItem(i);
+                mBusLineDetailLayout.setVisibility(View.VISIBLE);
+                mBusStationLayout.setVisibility(View.GONE);
+                mRealTimeBusView.setBusLineItem(busLineItem,cityCode);
+                mBusLineNameTv.setText(busLineItem.getBusLineName());
+            }
+        });
+
         mBusStationNameTv.setText(mBusStationName);
     }
 }

@@ -43,7 +43,13 @@
     <item>@string/night_mode</item>
     <item>@string/navi_mode</item>
 </string-array>
-
+    <string-array name="road_state_strs">
+        <item>缓行</item>
+        <item>拥堵</item>
+        <item>严重拥堵</item>
+        <item>畅通</item>
+        <item>单位:km/h</item>
+    </string-array>
 <string name="poiclick_demo">地图Poi点击功能</string>
 <string name="poiclick_description">介绍地图底图poi点击事件和处理</string>
 <string name="layers_demo">Layers图层功能</string>
@@ -282,5 +288,6 @@
 <string name="particle_decription">粒子效果示例</string>
 <string name="particle_weather_demo">粒子效果+天气示例</string>
 <string name="particle_weather_decription">粒子效果+天气示例</string>
+
 
 </resources>

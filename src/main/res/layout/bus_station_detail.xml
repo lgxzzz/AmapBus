@@ -6,20 +6,86 @@
     android:background="@android:color/white"
     android:gravity="center"
     android:orientation="vertical">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/bus_station_name"
-        android:textSize="30dp"
-        android:textColor="@android:color/black"
-        android:text="公交站名"
-        />
-    <ListView
+    <LinearLayout
         android:layout_width="350dp"
         android:layout_height="400dp"
-        android:id="@+id/bus_line_listview"
+        android:id="@+id/bus_station_layout"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:gravity="center"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/bus_station_name"
+            android:textSize="30dp"
+            android:textColor="@android:color/black"
+            android:text="公交站名"
+            />
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/bus_line_listview"
+            >
+        </ListView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bus_line_layout"
+        android:layout_width="350dp"
+        android:layout_height="400dp"
+        android:orientation="vertical"
+        android:visibility="gone"
         >
 
-    </ListView>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/bus_line_detail_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_margin="5dp"
+                android:text="返回" />
+
+            <Button
+                android:id="@+id/bus_line_detail_fav"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_margin="5dp"
+                android:text="收藏" />
+
+            <TextView
+                android:id="@+id/bus_line_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:text="路线名称"
+                android:textColor="@android:color/black"
+                android:textSize="25dp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <com.map.service.view.RealTimeBusView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:id="@+id/real_bus_view"
+            android:layout_weight="1"
+            android:visibility="gone"
+            />
+        <com.map.service.view.HorizontalListView2
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/horizon_listview"
+            >
+        </com.map.service.view.HorizontalListView2>
+    </LinearLayout>
 
 </LinearLayout>
