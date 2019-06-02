@@ -148,6 +148,11 @@ public class RegisterActivity extends BaseActivity {
                                break;
                        }
                     }
+
+                    @Override
+                    public void onFavsucces() {
+
+                    }
                 });
             }
         });

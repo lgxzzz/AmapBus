@@ -4,16 +4,25 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.map.service.adapter.FavBusAdapter;
+import com.map.service.bean.FavBus;
 import com.map.service.bean.User;
+import com.map.service.manager.DBManager;
 import com.map.service.manager.LoginManager;
+import com.map.service.view.FavBusDialog;
 import com.map.service.view.HelpDialog;
 import com.map.service.view.MyInfoDialog;
+import com.map.service.view.SlideRecyclerView;
+
+import java.util.List;
 
 
 /**
@@ -36,13 +45,9 @@ public class BusFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private TextView mUserName;
-
-    private Button mMyInfo;
-    private Button mDaily;
-    private Button mHelp;
-
-    private Button mExApp;
+    private SlideRecyclerView recycler_view_list;
+    private List<FavBus> favBuses;
+    private FavBusAdapter mAdapter;
 
     public BusFragment() {
         // Required empty public constructor
@@ -79,35 +84,29 @@ public class BusFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragemnt_my, container, false);
-        User user = LoginManager.getInstance(getContext()).getUser();
-        mUserName = (TextView)view.findViewById(R.id.user_name);
-        mExApp = (Button)view.findViewById(R.id.exit_app_btn);
-        mUserName.setText(user.getName());
-        mMyInfo = (Button)view.findViewById(R.id.my_info);
-        mHelp = (Button)view.findViewById(R.id.my_help);
-        mMyInfo.setOnClickListener(new View.OnClickListener() {
+        View view = inflater.inflate(R.layout.fragemnt_fav_bus, container, false);
+        recycler_view_list = (SlideRecyclerView) view.findViewById(R.id.fav_bus_recyleview);
+        recycler_view_list.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        favBuses = DBManager.getInstance(getContext()).getAllFavBus(null,null,null,null,null,null);
+        mAdapter = new FavBusAdapter(getContext(),favBuses);
+        mAdapter.setOnDeleteClickListener(new FavBusAdapter.OnDeleteClickLister() {
             @Override
-            public void onClick(View view) {
-                MyInfoDialog myInfoDialog = new MyInfoDialog(getContext(),R.layout.my_info,true,true);
-                myInfoDialog.show();
+            public void onDeleteClick(View view,final int position) {
+                DBManager.getInstance(getContext()).delFavBusStation(favBuses.get(position).getBus_line_id());
+                favBuses.remove(position);
+                mAdapter.notifyDataSetChanged();
+                recycler_view_list.closeMenu();
             }
         });
-
-        mHelp.setOnClickListener(new View.OnClickListener() {
+        mAdapter.setOnItemClickListener(new FavBusAdapter.OnItemClickListener() {
             @Override
-            public void onClick(View view) {
-                HelpDialog mHelpDialog = new HelpDialog(getContext(),R.layout.my_help,true,true);
-                mHelpDialog.show();
+            public void onItemClick(RecyclerView.Adapter adapter, View v, int position) {
+                FavBusDialog dialog = new FavBusDialog(getContext(),R.layout.fav_bus_dialog,true,true);
+                dialog.setFavBus(favBuses.get(position));
+                dialog.show();
             }
         });
-
-        mExApp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().finish();
-            }
-        });
+        recycler_view_list.setAdapter(mAdapter);
         return view;
     }
 

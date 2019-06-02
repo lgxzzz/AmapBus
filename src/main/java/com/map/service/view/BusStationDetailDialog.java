@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amap.api.services.busline.BusLineItem;
 import com.amap.api.services.busline.BusStationItem;
@@ -18,6 +19,8 @@ import com.map.service.R;
 import com.map.service.adapter.BusLineListAdapter;
 import com.map.service.adapter.RealBusAdapter;
 import com.map.service.amap.api.BusSearchMgr;
+import com.map.service.bean.User;
+import com.map.service.manager.DBManager;
 
 import java.util.List;
 
@@ -42,11 +45,11 @@ public class BusStationDetailDialog extends Dialog {
     private Button mBackBtn;
     private Button mFaveBtn;
 
-    private RealTimeBusView mRealTimeBusView;
     private String cityCode;
     private HorizontalListView2 horizon_listview;
     private BusSearchMgr mBusSearchMgr;
     private RealBusAdapter mRealBusAdapter;
+    private BusLineItem mSelectBusLineItem;
 
     public BusStationDetailDialog(Context context, int layoutid, boolean isCancelable, boolean isBackCancelable) {
         super(context, R.style.MyDialog);
@@ -94,7 +97,6 @@ public class BusStationDetailDialog extends Dialog {
         mBackBtn = (Button)this.view.findViewById(R.id.bus_line_detail_back);
         mFaveBtn = (Button)this.view.findViewById(R.id.bus_line_detail_fav);
 
-        mRealTimeBusView = (RealTimeBusView) this.view.findViewById(R.id.real_bus_view);
 
         mBackBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,7 +109,22 @@ public class BusStationDetailDialog extends Dialog {
         mFaveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                DBManager.getInstance(getContext()).addFavBusStation(mSelectBusLineItem, cityCode, new DBManager.DBManagerListener() {
+                    @Override
+                    public void onSuccess(User user) {
 
+                    }
+
+                    @Override
+                    public void onFail(int error) {
+                        Toast.makeText(getContext(),"已经收藏过该路线",Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onFavsucces() {
+                        Toast.makeText(getContext(),"收藏成功！",Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         });
 
@@ -123,13 +140,13 @@ public class BusStationDetailDialog extends Dialog {
         mBusLineListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                BusLineItem busLineItem = (BusLineItem)adapterView.getAdapter().getItem(i);
+                mSelectBusLineItem = (BusLineItem)adapterView.getAdapter().getItem(i);
                 mBusLineDetailLayout.setVisibility(View.VISIBLE);
                 mBusStationLayout.setVisibility(View.GONE);
 //                mRealTimeBusView.setBusLineItem(busLineItem,cityCode);
-                int index = busLineItem.getBusLineName().lastIndexOf("(");
-                mBusLineNameTv.setText(busLineItem.getBusLineName().substring(0,index));
-                mBusSearchMgr.searchLine(busLineItem.getBusLineId(),cityCode);
+                int index = mSelectBusLineItem.getBusLineName().lastIndexOf("(");
+                mBusLineNameTv.setText(mSelectBusLineItem.getBusLineName().substring(0,index));
+                mBusSearchMgr.searchLine(mSelectBusLineItem.getBusLineId(),cityCode);
             }
         });
 

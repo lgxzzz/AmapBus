@@ -75,18 +75,13 @@
                 android:textStyle="bold" />
         </RelativeLayout>
 
-        <com.map.service.view.RealTimeBusView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:id="@+id/real_bus_view"
-            android:layout_weight="1"
-            android:visibility="gone"
-            />
+
         <com.map.service.view.HorizontalListView2
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:id="@+id/horizon_listview"
+            android:layout_marginTop="30dp"
             >
         </com.map.service.view.HorizontalListView2>
     </LinearLayout>

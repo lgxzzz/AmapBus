@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 
+import com.amap.api.services.busline.BusLineItem;
+import com.map.service.bean.FavBus;
 import com.map.service.bean.User;
 import com.map.service.constant.ErrorCode;
 import com.map.service.data.SQLiteDbHelper;
@@ -100,8 +102,56 @@ public class DBManager {
         listener.onFail(ErrorCode.ERROR_SEARCH);
     }
 
+    //收藏公交路线
+    public void addFavBusStation(BusLineItem item,String city_code,DBManagerListener listener){
+        int index = item.getBusLineName().lastIndexOf("(");
+        String buslineName = item.getBusLineName().substring(0,index);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        //先判断是否已经收藏过该路线
+        Cursor cursor = db.rawQuery("select * from fav_bus_station where bus_line_id =? and bus_name =?",new String[]{item.getBusLineId(),buslineName});
+        if (cursor!=null&&cursor.moveToFirst()){
+            listener.onFail(ErrorCode.ERROR_ALREADY_REGISTERED);
+            return;
+        };
+
+
+        ContentValues values = new ContentValues();
+        values.put("bus_name",buslineName);
+        values.put("bus_line_id",item.getBusLineId());
+        values.put("city_code",city_code);
+        long x = db.insert(SQLiteDbHelper.TAB_FAV_BUS_STATION,null,values);
+        db.close();
+        listener.onFavsucces();
+    }
+
+    //取消收藏路线
+    public void delFavBusStation(String bus_line_id){
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        long x = db.delete(SQLiteDbHelper.TAB_FAV_BUS_STATION,"bus_line_id =?",new String[]{bus_line_id});
+    }
+
+    //获取所有收藏路线
+    public List<FavBus> getAllFavBus(String[] columns, String selection, String[]  selectionArgs, String groupBy, String having, String orderBy){
+        List<FavBus> buses = new ArrayList<>();
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        Cursor cursor = db.query(SQLiteDbHelper.TAB_FAV_BUS_STATION,columns   ,selection,selectionArgs,groupBy,having,orderBy);
+        while (cursor.moveToNext()){
+            String bus_name = cursor.getString(cursor.getColumnIndex("bus_name"));
+            String bus_line_id = cursor.getString(cursor.getColumnIndex("bus_line_id"));
+            String city_code = cursor.getString(cursor.getColumnIndex("city_code"));
+            FavBus bus = new FavBus();
+            bus.setBus_line_id(bus_line_id);
+            bus.setBus_name(bus_name);
+            bus.setCity_code(city_code);
+            buses.add(bus);
+        }
+        db.close();
+        return buses;
+    }
+
     public interface DBManagerListener{
         public void onSuccess(User user);
         public void onFail(int error);
+        public void onFavsucces();
     }
 }

@@ -92,16 +92,16 @@
             android:orientation="vertical">
 
             <Button
-                android:id="@+id/my_help"
+                android:id="@+id/my_report"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:background="@drawable/help" />
+                android:background="@drawable/report" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:text="帮助"
+                android:text="反馈"
                 android:textColor="@android:color/black" />
         </LinearLayout>
 

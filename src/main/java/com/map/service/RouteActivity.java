@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 
 public class RouteActivity extends FragmentActivity
-        implements TabHost.OnTabChangeListener,MapFragment.OnFragmentInteractionListener,PlayFragment.OnFragmentInteractionListener,MyFragment.OnFragmentInteractionListener{
+        implements TabHost.OnTabChangeListener,MapFragment.OnFragmentInteractionListener,BusFragment.OnFragmentInteractionListener,MyFragment.OnFragmentInteractionListener{
     private FragmentTabHost tabHost;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -15,6 +15,7 @@ import com.map.service.bean.User;
 import com.map.service.manager.LoginManager;
 import com.map.service.view.HelpDialog;
 import com.map.service.view.MyInfoDialog;
+import com.map.service.view.ReportDialog;
 
 
 /**
@@ -40,8 +41,7 @@ public class MyFragment extends Fragment {
     private TextView mUserName;
 
     private Button mMyInfo;
-    private Button mDaily;
-    private Button mHelp;
+    private Button mReport;
 
     private Button mExApp;
 
@@ -86,7 +86,7 @@ public class MyFragment extends Fragment {
         mExApp = (Button)view.findViewById(R.id.exit_app_btn);
         mUserName.setText(user.getName());
         mMyInfo = (Button)view.findViewById(R.id.my_info);
-        mHelp = (Button)view.findViewById(R.id.my_help);
+        mReport = (Button)view.findViewById(R.id.my_report);
         mMyInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -95,11 +95,11 @@ public class MyFragment extends Fragment {
             }
         });
 
-        mHelp.setOnClickListener(new View.OnClickListener() {
+        mReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                HelpDialog mHelpDialog = new HelpDialog(getContext(),R.layout.my_help,true,true);
-                mHelpDialog.show();
+                ReportDialog mReportDialog = new ReportDialog(getContext(),R.layout.my_report,true,true);
+                mReportDialog.show();
             }
         });
 

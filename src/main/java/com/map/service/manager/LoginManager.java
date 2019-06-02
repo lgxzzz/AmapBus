@@ -52,6 +52,11 @@ public class LoginManager {
             public void onFail(int error) {
                 listenter.onError(error);
             }
+
+            @Override
+            public void onFavsucces() {
+
+            }
         });
 
     }

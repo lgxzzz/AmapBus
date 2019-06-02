@@ -42,7 +42,7 @@ public class RealBusAdapter extends BaseAdapter {
 		if (convertView == null) {
 			holder = new ViewHolder();
 			convertView = View.inflate(mContext, R.layout.item_real_bus, null);
-//			holder.title = (TextView) convertView.findViewById(R.id.bus_station_title);
+			holder.station = (TextView) convertView.findViewById(R.id.real_bus_station);
 //			holder.des = (TextView) convertView.findViewById(R.id.bus_station_des);
 			convertView.setTag(holder);
 		} else {
@@ -50,13 +50,13 @@ public class RealBusAdapter extends BaseAdapter {
 		}
 		
 		final BusStationItem item = items.get(position);
-//		holder.title.setText(item.getBusStationName());
+		holder.station.setText(item.getBusStationName());
 //		holder.des.setText(item.toString());
 		return convertView;
 	}
 	
 	private class ViewHolder {
-		TextView title;
+		TextView station;
 		TextView des;
 	}
 

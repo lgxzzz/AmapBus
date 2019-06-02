@@ -260,7 +260,7 @@ public class MapFragment extends Fragment  implements AMap.OnMapClickListener,Ro
 
             @Override
             public void onFail(String error) {
-                ToastUtil.show(getContext(),error);
+//                ToastUtil.show(getContext(),error);
             }
         });
 
@@ -376,7 +376,7 @@ public class MapFragment extends Fragment  implements AMap.OnMapClickListener,Ro
 
             @Override
             public void onFail(String error) {
-                Toast.makeText(getContext(),error,Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(),error,Toast.LENGTH_SHORT).show();
             }
         });
 
