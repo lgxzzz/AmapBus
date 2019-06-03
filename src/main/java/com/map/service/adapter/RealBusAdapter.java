@@ -1,6 +1,7 @@
 package com.map.service.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -8,17 +9,27 @@ import android.widget.TextView;
 
 import com.amap.api.services.busline.BusStationItem;
 import com.map.service.R;
+import com.map.service.amap.api.SimulationDataApi;
+import com.map.service.bean.BusInfo;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RealBusAdapter extends BaseAdapter {
 	private Context mContext;
 	private List<BusStationItem> items;
-
+	private SimulationDataApi mSimulationApi;
 	public RealBusAdapter(Context context, List<BusStationItem> items) {
 		mContext = context;
 		this.items = items;
+		mSimulationApi = new SimulationDataApi();
+		mSimulationApi.setStationItems(items);
+		mSimulationApi.setListener(new SimulationDataApi.SimulationDataListener() {
+			@Override
+			public void onSimulation(BusInfo busInfo) {
+				Log.e("zzz",busInfo.toString());
+			}
+		});
+		mSimulationApi.startSimulation();
 	}
 	
 	@Override
