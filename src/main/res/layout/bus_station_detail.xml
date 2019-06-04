@@ -74,7 +74,44 @@
                 android:textSize="20dp"
                 android:textStyle="bold" />
         </RelativeLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:text="当前站点"
+            android:gravity="center"
+            android:id="@+id/bus_cur_station"
+            android:layout_marginTop="10dp"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginTop="30dp"
+            >
 
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:text="速度"
+                android:layout_gravity="center"
+                android:id="@+id/bus_speed"
+                android:gravity="center"
+                />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:text="到站时间"
+                android:gravity="center"
+                android:id="@+id/bus_arrived_time"
+                />
+
+        </LinearLayout>
 
         <com.map.service.view.HorizontalListView2
             android:layout_width="match_parent"

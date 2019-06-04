@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.map.service.adapter.FavBusAdapter;
+import com.map.service.amap.api.SimulationDataApi;
+import com.map.service.bean.BusInfo;
 import com.map.service.bean.FavBus;
 import com.map.service.bean.User;
 import com.map.service.manager.DBManager;
@@ -107,6 +110,7 @@ public class BusFragment extends Fragment {
             }
         });
         recycler_view_list.setAdapter(mAdapter);
+
         return view;
     }
 

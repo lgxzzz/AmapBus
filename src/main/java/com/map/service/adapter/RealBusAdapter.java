@@ -1,10 +1,12 @@
 package com.map.service.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amap.api.services.busline.BusStationItem;
@@ -17,21 +19,18 @@ import java.util.List;
 public class RealBusAdapter extends BaseAdapter {
 	private Context mContext;
 	private List<BusStationItem> items;
-	private SimulationDataApi mSimulationApi;
+	private BusInfo mBusinfo;
 	public RealBusAdapter(Context context, List<BusStationItem> items) {
 		mContext = context;
 		this.items = items;
-		mSimulationApi = new SimulationDataApi();
-		mSimulationApi.setStationItems(items);
-		mSimulationApi.setListener(new SimulationDataApi.SimulationDataListener() {
-			@Override
-			public void onSimulation(BusInfo busInfo) {
-				Log.e("zzz",busInfo.toString());
-			}
-		});
-		mSimulationApi.startSimulation();
+
 	}
-	
+
+	public void setmArrivedIndex(BusInfo mBusinfo){
+		this.mBusinfo = mBusinfo;
+		notifyDataSetChanged();
+	}
+
 	@Override
 	public int getCount() {
 		return items.size();
@@ -54,7 +53,8 @@ public class RealBusAdapter extends BaseAdapter {
 			holder = new ViewHolder();
 			convertView = View.inflate(mContext, R.layout.item_real_bus, null);
 			holder.station = (TextView) convertView.findViewById(R.id.real_bus_station);
-//			holder.des = (TextView) convertView.findViewById(R.id.bus_station_des);
+			holder.mBusPic = (ImageView) convertView.findViewById(R.id.real_bus_pic);
+			holder.mBusPoint = (ImageView) convertView.findViewById(R.id.real_bus_point);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
@@ -62,13 +62,28 @@ public class RealBusAdapter extends BaseAdapter {
 		
 		final BusStationItem item = items.get(position);
 		holder.station.setText(item.getBusStationName());
-//		holder.des.setText(item.toString());
+		if (mBusinfo!=null&&mBusinfo.getmBusIndex()==position)
+		{
+            holder.station.setTextColor(Color.RED);
+			holder.mBusPoint.setVisibility(View.VISIBLE);
+            if (mBusinfo.getmStatus().equals(BusInfo.BusStatus.ARRIVED)){
+				holder.mBusPic.setVisibility(View.GONE);
+			}else{
+				holder.mBusPic.setVisibility(View.VISIBLE);
+			}
+
+		}else{
+            holder.station.setTextColor(Color.BLACK);
+            holder.mBusPic.setVisibility(View.GONE);
+            holder.mBusPoint.setVisibility(View.GONE);
+        }
 		return convertView;
 	}
 	
 	private class ViewHolder {
 		TextView station;
-		TextView des;
+		ImageView mBusPic;
+		ImageView mBusPoint;
 	}
 
 }

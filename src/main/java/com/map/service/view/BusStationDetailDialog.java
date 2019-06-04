@@ -4,6 +4,7 @@ package com.map.service.view;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,6 +20,8 @@ import com.map.service.R;
 import com.map.service.adapter.BusLineListAdapter;
 import com.map.service.adapter.RealBusAdapter;
 import com.map.service.amap.api.BusSearchMgr;
+import com.map.service.amap.api.SimulationDataApi;
+import com.map.service.bean.BusInfo;
 import com.map.service.bean.User;
 import com.map.service.manager.DBManager;
 
@@ -44,22 +47,28 @@ public class BusStationDetailDialog extends Dialog {
     private LinearLayout mBusLineDetailLayout;
     private Button mBackBtn;
     private Button mFaveBtn;
-
+    private TextView mBusSpeedTv;
+    private TextView mBusArrivedTimeTv;
+    private TextView mBusCurStationTv;
     private String cityCode;
     private HorizontalListView2 horizon_listview;
     private BusSearchMgr mBusSearchMgr;
     private RealBusAdapter mRealBusAdapter;
     private BusLineItem mSelectBusLineItem;
-
+    private SimulationDataApi mSimulationApi;
+    List<BusStationItem> itmes;
     public BusStationDetailDialog(Context context, int layoutid, boolean isCancelable, boolean isBackCancelable) {
         super(context, R.style.MyDialog);
         mBusSearchMgr = new BusSearchMgr(context);
         mBusSearchMgr.setLineListener(new BusSearchMgr.BusLineSearchListener() {
             @Override
             public void onSuccess(List<BusLineItem> lineItems) {
-                List<BusStationItem> itmes = lineItems.get(0).getBusStations();
+                itmes = lineItems.get(0).getBusStations();
                 mRealBusAdapter = new RealBusAdapter(getContext(),itmes);
                 horizon_listview.setAdapter(mRealBusAdapter);
+                mSimulationApi.setStationItems(itmes);
+
+                mSimulationApi.startSimulation();
             }
 
             @Override
@@ -129,6 +138,26 @@ public class BusStationDetailDialog extends Dialog {
         });
 
         horizon_listview = (HorizontalListView2) this.view.findViewById(R.id.horizon_listview);
+        mBusSpeedTv = (TextView) this.view.findViewById(R.id.bus_speed);
+        mBusArrivedTimeTv = (TextView) this.view.findViewById(R.id.bus_arrived_time);
+        mBusCurStationTv = (TextView) this.view.findViewById(R.id.bus_cur_station);
+        mSimulationApi = new SimulationDataApi();
+        mSimulationApi.setListener(new SimulationDataApi.SimulationDataListener() {
+            @Override
+            public void onSimulation(BusInfo busInfo) {
+                try{
+                    Log.e("zzz",busInfo.toString());
+                    mBusSpeedTv.setText("速度："+busInfo.getmSpeed()+"km/h");
+                    mBusArrivedTimeTv.setText("到达时间："+busInfo.getmArrivedTime()+"min");
+                    String des = "前方站点："+itmes.get(busInfo.getmBusIndex()).getBusStationName();
+                    mBusCurStationTv.setText(des);
+                    mRealBusAdapter.setmArrivedIndex(busInfo);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        });
     }
 
 

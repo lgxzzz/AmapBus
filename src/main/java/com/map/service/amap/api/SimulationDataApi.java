@@ -22,7 +22,7 @@ public class SimulationDataApi extends Handler {
     private SimulationDataListener listener;
 
     private int mBusIndex;//当前到站
-    private int mArrivedCount =1;//刷新两次后到站
+    private int mArrivedCount =3;//刷新两次后到站
     private BusInfo mBusInfo;
 
     public SimulationDataApi(){
@@ -48,7 +48,7 @@ public class SimulationDataApi extends Handler {
 
     //随机选取一个公交站
     public void setDefaultValue(){
-        int length = stationItems.size();
+        int length = stationItems.size()+1;
         mBusIndex = new Random().nextInt(length);
         mBusInfo = new BusInfo();
         mBusInfo.setmBusIndex(mBusIndex);
@@ -59,18 +59,16 @@ public class SimulationDataApi extends Handler {
 
     //改变状态
     public void changeStatus(){
-        if (mArrivedCount>=0){
+        if (mArrivedCount>0){
             mArrivedCount--;
             if (mArrivedCount == 0)
             {
                 mBusInfo.setmStatus( BusInfo.BusStatus.ARRIVED);
-                mBusInfo.setmSpeed(new Random().nextInt(20));
-                mBusInfo.setmArrivedTime(mBusInfo.getmArrivedTime()/2);
             }else{
                 mBusInfo.setmStatus( BusInfo.BusStatus.NOTARRIVE);
-                mBusInfo.setmSpeed(new Random().nextInt(20));
-                mBusInfo.setmArrivedTime(mBusInfo.getmArrivedTime()/2);
             }
+            mBusInfo.setmSpeed(new Random().nextInt(20));
+            mBusInfo.setmArrivedTime(mBusInfo.getmArrivedTime()/2);
         }else{
             mArrivedCount = 2;
             goToNextStation();
@@ -84,6 +82,9 @@ public class SimulationDataApi extends Handler {
             mBusIndex = 0;
         }
         mBusInfo.setmBusIndex(mBusIndex);
+        mBusInfo.setmArrivedTime(new Random().nextInt(15));
+        mBusInfo.setmStatus( BusInfo.BusStatus.NOTARRIVE);
+
     }
 
     public void setListener(SimulationDataListener listener){
@@ -107,7 +108,7 @@ public class SimulationDataApi extends Handler {
             case HANDLER_MSG_REFRESH_UI:
             listener.onSimulation(mBusInfo);
             changeStatus();
-            refreshUI(100);
+            refreshUI(3*1000);
             break;
             default:
             break;

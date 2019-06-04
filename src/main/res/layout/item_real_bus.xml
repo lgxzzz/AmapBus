@@ -10,25 +10,29 @@
         android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:visibility="invisible"
         >
         <ImageView
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:src="@drawable/bus"
             android:layout_alignParentLeft="true"
+            android:visibility="invisible"
+            android:id="@+id/real_bus_pic"
             />
         <ImageView
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:background="@drawable/bus_point"
             android:layout_centerInParent="true"
+            android:visibility="invisible"
+            android:id="@+id/real_bus_point"
             />
         <ImageView
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:src="@drawable/bus"
             android:layout_alignParentRight="true"
+            android:visibility="invisible"
             />
     </RelativeLayout>
     <RelativeLayout
