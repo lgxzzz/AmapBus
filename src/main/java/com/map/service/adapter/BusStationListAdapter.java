@@ -57,7 +57,7 @@ public class BusStationListAdapter extends BaseAdapter {
 		
 		final BusStationItem item = items.get(position);
 		holder.title.setText(item.getBusStationName());
-		holder.des.setText(item.toString());
+		holder.des.setText(item.getBusLineItems().toString());
 		
 //		convertView.setOnClickListener(new OnClickListener() {
 //

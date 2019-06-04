@@ -46,33 +46,35 @@
 
             <Button
                 android:id="@+id/bus_line_detail_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:layout_margin="5dp"
-                android:text="返回" />
+                android:background="@drawable/back_icon"
+                />
 
             <Button
                 android:id="@+id/bus_line_detail_fav"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:layout_margin="5dp"
-                android:text="收藏" />
+                android:background="@drawable/fave"
+                android:layout_marginRight="10dp"
+                />
 
             <TextView
                 android:id="@+id/bus_line_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
                 android:text="路线名称"
                 android:textColor="@android:color/black"
                 android:maxLength="10"
                 android:textSize="20dp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_centerInParent="true"
+                />
         </RelativeLayout>
         <TextView
             android:layout_width="match_parent"

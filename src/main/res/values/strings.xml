@@ -1,6 +1,6 @@
 
 <resources>
-<string name="app_name">AmapDemo</string>
+<string name="app_name">公交来了</string>
 <string name="animate">Animate</string>
 <string name="basic_map">显示地图</string>
 <string name="basic_description">介绍如何创建一个基本地图</string>

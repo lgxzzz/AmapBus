@@ -48,7 +48,7 @@ public class GeoSearchMgr implements GeocodeSearch.OnGeocodeSearchListener {
                 mListener.onFail("未搜索到该地址");
             }
         } else {
-            mListener.onFail("搜索失败");
+//            mListener.onFail("搜索失败");
         }
     }
 

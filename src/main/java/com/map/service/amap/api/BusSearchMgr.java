@@ -51,7 +51,8 @@ public class BusSearchMgr implements BusStationSearch.OnBusStationSearchListener
      */
     public void searchLine(String search,String cityCode) {
         if ("".equals(search)) {
-            mLineListener.onFail("搜索失败");
+//            mLineListener.onFail("搜索失败");
+            return;
         }
         busLineQuery = new BusLineQuery(search, BusLineQuery.SearchType.BY_LINE_ID,
                 cityCode);// 第一个参数表示公交线路名，第二个参数表示公交线路查询，第三个参数表示所在城市名或者城市区号
@@ -91,10 +92,10 @@ public class BusSearchMgr implements BusStationSearch.OnBusStationSearchListener
                     }
                 }
             } else {
-                mLineListener.onFail("搜索失败");
+//                mLineListener.onFail("搜索失败");
             }
         } else {
-            mLineListener.onFail("搜索失败");
+//            mLineListener.onFail("搜索失败");
         }
     }
 
