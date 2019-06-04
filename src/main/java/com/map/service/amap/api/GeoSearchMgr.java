@@ -39,10 +39,10 @@ public class GeoSearchMgr implements GeocodeSearch.OnGeocodeSearchListener {
         if (rCode == AMapException.CODE_AMAP_SUCCESS) {
             if (result != null && result.getGeocodeAddressList() != null
                     && result.getGeocodeAddressList().size() > 0) {
-                GeocodeAddress address = result.getGeocodeAddressList().get(0);
+                List<GeocodeAddress> geoaddress = result.getGeocodeAddressList();
 
-                if(address != null) {
-                   mListener.onSuccess(address);
+                if(geoaddress.size() >0) {
+                   mListener.onSuccess(geoaddress);
                 }
             } else {
                 mListener.onFail("未搜索到该地址");
@@ -54,7 +54,7 @@ public class GeoSearchMgr implements GeocodeSearch.OnGeocodeSearchListener {
 
 
     public interface GeoSearchListener{
-        public void onSuccess(GeocodeAddress address);
+        public void onSuccess(List<GeocodeAddress> geoaddress);
         public void onFail(String error);
     }
 

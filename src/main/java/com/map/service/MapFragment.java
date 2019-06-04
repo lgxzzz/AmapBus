@@ -56,11 +56,13 @@ import com.amap.api.services.route.WalkPath;
 import com.amap.api.services.route.WalkRouteResult;
 import com.map.service.adapter.BusResultListAdapter;
 import com.map.service.adapter.BusStationListAdapter;
+import com.map.service.adapter.GeoSearchAdapter;
 import com.map.service.adapter.PoiSearchAdapter;
 import com.map.service.amap.api.BusSearchMgr;
 import com.map.service.amap.api.GeoSearchMgr;
 import com.map.service.amap.api.LocationMgr;
 import com.map.service.amap.api.PoiSearchMgr;
+import com.map.service.bean.GeoSearchEntity;
 import com.map.service.bean.PoiSearchEntity;
 import com.map.service.overlay.DrivingRouteOverlay;
 import com.map.service.overlay.WalkRouteOverlay;
@@ -127,6 +129,7 @@ public class MapFragment extends Fragment  implements AMap.OnMapClickListener,Ro
 
     private PoiSearchAdapter mMovePoiAapter;
     private PoiSearchAdapter mTextPoiAapter;
+    private GeoSearchAdapter mGeoSearchAdapter;
     private BusStationListAdapter mBusStationAdapter;
 
     private PoiSearchMgr mPoiSearchMgr;
@@ -254,8 +257,23 @@ public class MapFragment extends Fragment  implements AMap.OnMapClickListener,Ro
 
         startGeoSearchMgr.setGeoSearchListener(new GeoSearchMgr.GeoSearchListener() {
             @Override
-            public void onSuccess(GeocodeAddress address) {
-                mStartPoint = address.getLatLonPoint();
+            public void onSuccess(List<GeocodeAddress> geoaddress) {
+                mGeoSearchAdapter = new GeoSearchAdapter(getContext(),geoaddress);
+                mTextPoiListView.setAdapter(mGeoSearchAdapter);
+                mTextPoiListView.setVisibility(View.VISIBLE);
+                mTextPoiListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        isSearchText = true;
+                        GeoSearchEntity geoSearchEntity = (GeoSearchEntity)mGeoSearchAdapter.getItem(i);
+                        mStartPoint = geoSearchEntity.getGeoItem().getLatLonPoint();
+                        mGeoStartEdit.setText(geoSearchEntity.getGeoItem().getFormatAddress());
+                        mTextPoiListView.setVisibility(View.GONE);
+                        mCancelBtn.setVisibility(View.GONE);
+
+                    }
+                });
+                hideInput();
             }
 
             @Override
@@ -266,8 +284,23 @@ public class MapFragment extends Fragment  implements AMap.OnMapClickListener,Ro
 
         endGeoSearchMgr.setGeoSearchListener(new GeoSearchMgr.GeoSearchListener() {
             @Override
-            public void onSuccess(GeocodeAddress address) {
-                mEndPoint = address.getLatLonPoint();
+            public void onSuccess(List<GeocodeAddress> geoaddress) {
+                mGeoSearchAdapter = new GeoSearchAdapter(getContext(),geoaddress);
+                mTextPoiListView.setAdapter(mGeoSearchAdapter);
+                mTextPoiListView.setVisibility(View.VISIBLE);
+                mTextPoiListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        isSearchText = true;
+                        GeoSearchEntity geoSearchEntity = (GeoSearchEntity)mGeoSearchAdapter.getItem(i);
+                        mEndPoint = geoSearchEntity.getGeoItem().getLatLonPoint();
+                        mGeoEndEdit.setText(geoSearchEntity.getGeoItem().getFormatAddress());
+                        mTextPoiListView.setVisibility(View.GONE);
+                        mCancelBtn.setVisibility(View.GONE);
+
+                    }
+                });
+                hideInput();
             }
 
             @Override
@@ -358,18 +391,6 @@ public class MapFragment extends Fragment  implements AMap.OnMapClickListener,Ro
 
             @Override
             public void onSuccess(List<PoiItem> poiItems) {
-//                mMovePoiAapter = new PoiSearchAdapter(getContext(),poiItems);
-//                mMovePoiListView.setAdapter(mMovePoiAapter);
-//                mMovePoiListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                    @Override
-//                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                        PoiSearchEntity poiSearchEntity = (PoiSearchEntity)mMovePoiAapter.getItem(i);
-//                        mFinalChoosePosition =  convertToLatLng(poiSearchEntity.getPoiItem().getLatLonPoint());
-//                        Log.d("lgx","点击后的最终经纬度：  纬度" + mFinalChoosePosition.latitude + " 经度 " + mFinalChoosePosition.longitude);
-//                        // 只要地图发生改变，就会调用 onCameraChangeFinish
-//                        mAMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mFinalChoosePosition.latitude, mFinalChoosePosition.longitude), 15));
-//                    }
-//                });
                 PoiItem item = poiItems.get(0);
                 mBusSearchMgr.searchStation(item.getTitle(),cityCode);
             }
@@ -438,6 +459,9 @@ public class MapFragment extends Fragment  implements AMap.OnMapClickListener,Ro
                 mGeoSearchLayout.setVisibility(View.GONE);
                 mPoiSearchLayout.setVisibility(View.VISIBLE);
                 mMovePoiListView.setVisibility(View.VISIBLE);
+                mTextPoiListView.setVisibility(View.GONE);
+                mGeoStartEdit.setText("");
+                mGeoEndEdit.setText("");
                 moveMapCamera();
             }
         });
@@ -486,6 +510,10 @@ public class MapFragment extends Fragment  implements AMap.OnMapClickListener,Ro
 
             @Override
             public void afterTextChanged(Editable editable) {
+                if (isSearchText){
+                    isSearchText = false;
+                    return;
+                }
                 if(delayRun!=null){
                     //每次editText有变化的时候，则移除上次发出的延迟线程
                     handler.removeCallbacks(delayRun);
@@ -512,6 +540,10 @@ public class MapFragment extends Fragment  implements AMap.OnMapClickListener,Ro
 
             @Override
             public void afterTextChanged(Editable editable) {
+                if (isSearchText){
+                    isSearchText = false;
+                    return;
+                }
                 if(delayRun!=null){
                     //每次editText有变化的时候，则移除上次发出的延迟线程
                     handler.removeCallbacks(delayRun);
